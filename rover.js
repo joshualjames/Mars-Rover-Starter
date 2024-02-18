@@ -27,7 +27,6 @@ class Rover {
             response.results[i].completed = true;
          }
       }
-      console.log(response)
       return response;
    }
 };
