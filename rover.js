@@ -16,11 +16,16 @@ class Rover {
                mode: this.mode,
                generatorWatts: this.generatorWatts,
                position: this.position
-            }
+            } 
+         } else if (message.commands[i].commandType === 'MODE_CHANGE'){
+            this.mode = message.commands[i].value;
+         } else if (message.commands[i].commandType === 'MOVE' && this.mode === 'LOW_POWER') {
+            response['completed'] = false;
+         } else if (message.commands[i].commandType === 'MOVE') {
+            this.position = message.commands[i].value;
          }
-      };
+      }
       return response;
-  
    }
 };
 
