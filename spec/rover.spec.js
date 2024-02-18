@@ -17,9 +17,9 @@ describe("Rover class", function() {
   it("response returned by receiveMessage contains the name of the message", () => {
     let commands = [new Command('MODE_CHANGE', 'LOW_POWER'), new Command('STATUS_CHECK')];
     let message = new Message('Test message with two commands', commands);
-    let rover = new Rover(2);
+    let rover = new Rover(40);
     let response = rover.receiveMessage(message);
-    expect(response.message.name).toBe(message.name);
+    expect(response.message).toBe(message.name);
   });
 
   it("response returned by receiveMessage includes two results if two commands are sent in the message", () => {
@@ -35,7 +35,7 @@ describe("Rover class", function() {
     let message = new Message('Statud Check', commands);
     let rover = new Rover(200);
     let response = rover.receiveMessage(message);
-    expect(response.roverStatus).toStrictEqual({generatorWatts: 110, mode: 'Normal', position: 200});
+    expect(response.results[0].roverStatus).toStrictEqual({generatorWatts: 110, mode: 'Normal', position: 200});
   });
 
   it("responds correctly to the mode change command", () => {
@@ -43,7 +43,7 @@ describe("Rover class", function() {
     let message = new Message('Test message with mode change command', commands);
     let rover = new Rover(10);
     let response = rover.receiveMessage(message);
-    expect(response.completed).toBe(true);
+    expect(response.results[0].completed).toBe(true);
     expect(rover.mode).toBe('LOW_POWER');
   });
 
@@ -52,7 +52,7 @@ describe("Rover class", function() {
     let message = new Message('Low power mode then move', commands);
     let rover = new Rover(0);
     let response = rover.receiveMessage(message);
-    expect(response.completed).toBe(false);
+    expect(response.results[1].completed).toBe(false);
   })
 
   it("responds with the position for the move command", () => {
@@ -60,7 +60,7 @@ describe("Rover class", function() {
     let message = new Message('MOVE', commands);
     let rover = new Rover(0);
     let response = rover.receiveMessage(message);
-    expect(response.completed).toBe(true);
+    expect(response.results[0].completed).toBe(true);
     expect(rover.position).toBe(300);
   })
 
